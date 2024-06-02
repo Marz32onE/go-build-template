@@ -4,8 +4,8 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 
+	config "github.com/marz32one/go-build-template/internal"
 	api "github.com/marz32one/go-build-template/pkg/api/rest"
-	"github.com/marz32one/go-build-template/pkg/storage"
 )
 
 func main() {
@@ -16,7 +16,7 @@ func main() {
 	e.Use(middleware.Recover())
 
 	// Initialize database
-	storage.InitDB("mydatabase.db")
+	config.Load()
 
 	// Routes
 	api.InitRoutes(e)

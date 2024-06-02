@@ -21,8 +21,10 @@ export CGO_ENABLED=0
 export GO111MODULE=on
 
 echo "install dependency"
+go get -u github.com/joho/godotenv
 go get -u github.com/labstack/echo/v4
 go get -u github.com/labstack/echo/v4/middleware
 go get -u gorm.io/gorm
 go get -u gorm.io/driver/sqlite
+go get -u gorm.io/driver/mysql
 echo "done"

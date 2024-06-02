@@ -1,3 +1,6 @@
+init:
+	./build/init.sh
+
 run: build
 	./bin/tcm-backend
 
@@ -6,3 +9,6 @@ build:
 
 up:
 	go run cmd/api/main.go
+
+migration:
+	go run cmd/migration/main.go
