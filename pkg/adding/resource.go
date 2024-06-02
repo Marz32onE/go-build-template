@@ -10,7 +10,7 @@ import (
 
 // CreateItem adds a new item to the database
 func CreateItem(c echo.Context) error {
-	var item data.Item
+	var item data.Resource
 	if err := c.Bind(&item); err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}

@@ -8,5 +8,5 @@ import (
 
 func main() {
 	config.Load()
-	storage.DB.AutoMigrate(&data.Item{})
+	storage.DB.AutoMigrate(&data.Resource{})
 }

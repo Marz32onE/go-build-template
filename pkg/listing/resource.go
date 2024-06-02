@@ -12,7 +12,7 @@ import (
 
 // GetItems retrieves all items from the database
 func GetItems(c echo.Context) error {
-	var items []data.Item
+	var items []data.Resource
 	result := storage.DB.Find(&items)
 	if result.Error != nil {
 		return c.JSON(http.StatusInternalServerError, result.Error)
@@ -23,7 +23,7 @@ func GetItems(c echo.Context) error {
 // GetItem retrieves a single item by ID from the database
 func GetItem(c echo.Context) error {
 	id := c.Param("id")
-	var item data.Item
+	var item data.Resource
 	result := storage.DB.First(&item, id)
 	if result.Error != nil {
 		if result.Error == gorm.ErrRecordNotFound {
