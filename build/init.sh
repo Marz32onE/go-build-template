@@ -27,4 +27,6 @@ go get -u github.com/labstack/echo/v4/middleware
 go get -u gorm.io/gorm
 go get -u gorm.io/driver/sqlite
 go get -u gorm.io/driver/mysql
+go get -u github.com/rs/zerolog 
+go get -u gopkg.in/natefinch/lumberjack.v2     
 echo "done"

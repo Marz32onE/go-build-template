@@ -7,3 +7,4 @@
 /.buildx-initialized
 .env
 test.db
+/logs
