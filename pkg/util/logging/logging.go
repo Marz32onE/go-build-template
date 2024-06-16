@@ -52,6 +52,7 @@ func Configure(config Config) *zerolog.Logger {
 
 	zerolog.SetGlobalLevel(zerolog.DebugLevel)
 	logger := zerolog.New(mw).With().Timestamp().Logger()
+	log.Logger = logger
 
 	logger.Info().
 		Bool("fileLogging", config.FileLoggingEnabled).

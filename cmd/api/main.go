@@ -9,14 +9,13 @@ import (
 	"github.com/rs/zerolog"
 
 	"github.com/marz32one/go-build-template/internal/config"
-	"github.com/marz32one/go-build-template/internal/logging"
 	api "github.com/marz32one/go-build-template/pkg/api/rest"
+	"github.com/marz32one/go-build-template/pkg/util/logging"
 )
 
 func main() {
 	e := echo.New()
 
-	// logger := zerolog.New(os.Stdout)
 	logLevel, err := strconv.Atoi(os.Getenv("DEBUG_LEVEL"))
 	if err == nil {
 		logLevel = 0
@@ -46,9 +45,11 @@ func main() {
 				Str("remote_ip", v.RemoteIP).
 				Int("status", v.Status).
 				Dur("latency", v.Latency).
-				Err(v.Error).
 				Msg("request")
-			return nil
+			if v.Error != nil {
+				logger.Error().Err(v.Error).Msg("request error")
+			}
+			return v.Error
 		},
 	}))
 
@@ -60,12 +61,22 @@ func main() {
 			Str("request", string(reqBody)).
 			Msg("request body")
 	}))
+	e.Use(middleware.RecoverWithConfig(middleware.RecoverConfig{
+		LogErrorFunc: func(c echo.Context, err error, stack []byte) error {
+			logger.Error().Err(err).Bytes("stack", stack).Msg("Panic recovered")
+			return err
+		},
+	}))
 
 	// Initialize database
 	config.Load()
 
 	// Routes
 	api.InitRoutes(e)
+	e.GET("/error", func(c echo.Context) error {
+		logger.Error().Msg("Error endpoint called")
+		return echo.NewHTTPError(500, "Internal Server Error")
+	})
 
 	// Start server
 	e.Logger.Fatal(e.Start(":9527"))
