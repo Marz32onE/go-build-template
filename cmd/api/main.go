@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -10,10 +11,14 @@ import (
 
 	"github.com/marz32one/go-build-template/internal/config"
 	api "github.com/marz32one/go-build-template/pkg/api/rest"
+	customMiddleware "github.com/marz32one/go-build-template/pkg/middleware"
 	"github.com/marz32one/go-build-template/pkg/util/logging"
 )
 
 func main() {
+	// Initialize database
+	config.Load()
+
 	e := echo.New()
 
 	logLevel, err := strconv.Atoi(os.Getenv("DEBUG_LEVEL"))
@@ -32,30 +37,17 @@ func main() {
 	})
 
 	e.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
-		LogStatus:   true,
-		LogURI:      true,
-		LogMethod:   true,
-		LogRemoteIP: true,
-		LogLatency:  true,
-		LogError:    true,
-		LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
-			logger.Info().
-				Str("method", v.Method).
-				Str("URI", v.URI).
-				Str("remote_ip", v.RemoteIP).
-				Int("status", v.Status).
-				Dur("latency", v.Latency).
-				Msg("request")
-			if v.Error != nil {
-				logger.Error().Err(v.Error).Msg("request error")
-			}
-			return v.Error
-		},
+		LogStatus:     true,
+		LogURI:        true,
+		LogMethod:     true,
+		LogRemoteIP:   true,
+		LogLatency:    true,
+		LogError:      true,
+		LogValuesFunc: customMiddleware.GetLogValues,
 	}))
 
 	// Middleware
-	// e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
+	// e.Use(middleware.Recover())
 	e.Use(middleware.BodyDump(func(c echo.Context, reqBody, resBody []byte) {
 		logger.Info().
 			Str("request", string(reqBody)).
@@ -68,8 +60,13 @@ func main() {
 		},
 	}))
 
-	// Initialize database
-	config.Load()
+	// Timeout middleware with configuration
+	timeoutConfig := middleware.TimeoutConfig{
+		Timeout: 10 * time.Second,
+	}
+	e.Use(middleware.TimeoutWithConfig(timeoutConfig))
+
+	e.Use(customMiddleware.AuditMiddlewareWithConfig())
 
 	// Routes
 	api.InitRoutes(e)
