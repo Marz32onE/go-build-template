@@ -14,8 +14,5 @@ func GetLogValues(c echo.Context, v middleware.RequestLoggerValues) error {
 		Int("status", v.Status).
 		Dur("latency", v.Latency).
 		Msg("request")
-	if v.Error != nil {
-		log.Error().Err(v.Error).Msg("request error")
-	}
-	return v.Error
+	return nil
 }

@@ -10,8 +10,8 @@ import (
 	"github.com/rs/zerolog"
 
 	"github.com/marz32one/go-build-template/internal/config"
-	api "github.com/marz32one/go-build-template/pkg/api/rest"
-	customMiddleware "github.com/marz32one/go-build-template/pkg/middleware"
+	customMiddleware "github.com/marz32one/go-build-template/pkg/api/middleware"
+	"github.com/marz32one/go-build-template/pkg/api/router"
 	"github.com/marz32one/go-build-template/pkg/util/logging"
 )
 
@@ -67,12 +67,12 @@ func main() {
 	e.Use(middleware.TimeoutWithConfig(timeoutConfig))
 
 	e.Use(customMiddleware.AuditMiddlewareWithConfig())
+	e.Use(customMiddleware.ErrorHandlingMiddleware)
 
 	// Routes
-	api.InitRoutes(e)
+	router.InitRoutes(e)
 	e.GET("/error", func(c echo.Context) error {
-		logger.Error().Msg("Error endpoint called")
-		return echo.NewHTTPError(500, "Internal Server Error")
+		return echo.NewHTTPError(404, "Internal Server Error 1")
 	})
 
 	// Start server
