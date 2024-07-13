@@ -20,6 +20,11 @@ set -o nounset
 export CGO_ENABLED=0
 export GO111MODULE=on
 
+echo "build swagger"
+go install github.com/swaggo/swag/cmd/swag@latest
+swag init
+echo "done"
+
 echo "install dependency"
 go mod tidy
 echo "done"
