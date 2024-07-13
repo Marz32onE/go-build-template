@@ -22,7 +22,7 @@ export GO111MODULE=on
 
 echo "build swagger"
 go install github.com/swaggo/swag/cmd/swag@latest
-swag init
+swag init -g ./cmd/api/main.go 
 echo "done"
 
 echo "install dependency"

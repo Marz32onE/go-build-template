@@ -5,7 +5,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/marz32one/go-build-template/pkg/storage"
-	data "github.com/marz32one/go-build-template/pkg/storage/data"
+	"github.com/marz32one/go-build-template/pkg/storage/data"
 	"gorm.io/gorm"
 )
 
