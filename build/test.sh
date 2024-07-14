@@ -20,6 +20,10 @@ set -o nounset
 export CGO_ENABLED=0
 export GO111MODULE=on
 
+echo "mockgen"
+mockgen -package=mocks -destination=pkg/mocks/dbhandler_mock.go github.com/marz32one/go-build-template/pkg/storage DBHandler  
+echo
+
 echo "Running tests:"
 go test -installsuffix "static" "$@"
 echo
